@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-navbar [hideBackButton]="inExplore">
+    <ion-searchbar [(ngModel)]="searchString" (ionInput)="onSearch($event)" (ionClear)="clearSearch($event)" animated debounce=600
+      showCancelButton=false type="search" [placeholder]="'Search'">
+    </ion-searchbar>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content class="feed-tab background">
+  <div *ngIf="inExplore && !searchString">
+    <h3 class="title">Explore</h3>
+    <div class="interest-picker">
+      <ion-slides [pager]="pages.length > 1">
+        <ion-slide *ngFor="let page of pages;">
+          <ul class="picker">
+            <li *ngFor="let interestObj of page;" class="picker-item">
+              <interest-button [interest]="interestObj" (click)="getExploreFeed(interestObj.name, $event)"></interest-button>
+            </li>
+          </ul>
+
+          <div class="suggestion-block">
+            <button ion-button block large outline light class="suggest-interest button-outline-light" (click)="openNearMe($event)">
+              Near me
+            </button>
+          </div>
+        </ion-slide>
+      </ion-slides>
+    </div>
+  </div>
+
+  <div *ngIf="!inExplore && !loading && feed.length === 0" class="no-feed">
+    <h3 class="title">Something went wrong!</h3>
+    <button ion-button full (click)="resetPage()">Try again</button>
+  </div>
+
+  <div *ngIf="inExplore && searchString && !loading && feed.length === 0" class="no-feed">
+    <h3 class="title">There are no posts matching your search</h3>
+  </div>
+
+  <ion-list *ngIf="!isAndroid" [hidden]="(inExplore && !searchString) || loading || feed.length === 0" no-lines class="background">
+    <post-card *ngFor="let post of feed" [post]="post"></post-card>
+  </ion-list>
+  <ion-list *ngIf="isAndroid" [virtualScroll]="feed" [hidden]="(inExplore && !searchString) || loading || feed.length === 0"
+    no-lines class="background" approxItemHeight="100px">
+    <ion-item *virtualItem="let post" class="background">
+      <post-card [post]="post"></post-card>
+    </ion-item>
+  </ion-list>
+</ion-content>

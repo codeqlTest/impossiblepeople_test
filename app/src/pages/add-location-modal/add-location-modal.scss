@@ -1,0 +1,8 @@
+page-add-location-modal {
+    .searchbar-clear-icon {
+        margin: 0px;
+    }
+    .currentLocation {
+        color: map_get($colors, primary);
+    }
+}
